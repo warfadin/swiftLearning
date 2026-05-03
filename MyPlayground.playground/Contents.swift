@@ -1,55 +1,53 @@
 import Cocoa
 
-// CheckPoint 7 için çözümüm
 
-class Animal {
-    var legs: Int
-    init(legs: Int) {
-        self.legs = legs
+var quote = "  The nmagsdgads ffff asdfaf   "
+let trimmed = quote.trimmingCharacters(in: .whitespacesAndNewlines)
+
+extension String {
+    func trimmed() -> String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    mutating func trim() {
+        self = self.trimmed()
+    }
+    
+    var lines: [String] {
+        self.components(separatedBy: .newlines)
     }
 }
 
-class Dogs: Animal {
-    func speak() {
-        print("bark")
-    }
-    init() {
-        super.init(legs: 4)
+let lyrics = """
+But I keep cruising
+Can't stop, won't stop moving
+It's like I got this music in my mind
+Saying it's gonna be alright
+"""
+
+struct Book {
+    let title: String
+    let pageCount: Int
+    let readingHours: Int
+}
+
+extension Book {
+    init(title: String, pageCount: Int) {
+        self.title = title
+        self.pageCount = pageCount
+        self.readingHours = pageCount / 50
     }
 }
-    
-    class Corgi: Dogs {
-        override func speak() {
-            print("woof")
-        }
-    }
-    
-    class Poodle: Dogs{
-        override func speak() {
-            print("pup")
-        }
-    }
-    
-    class Cats: Animal {
-        var isTame: Bool
-        init(isTame: Bool) {
-            self.isTame = isTame
-            super.init(legs: 4)
-        }
-        func speak() {
-            print("meow")
-        }
-    }
-    
-    final class Persian: Cats {
-        override func speak() {
-            print("miaow")
-        }
-    }
-    
-    final class Lion: Cats {
-        override func speak() {
-            print("roar")
-        }
-    }
 
+let lotr = Book(title: "Lord of the Rings", pageCount: 2000)
+
+let hPa = Book(title: "Harry Potter", pageCount: 1000, readingHours: 145)
+
+
+
+extension Int {
+    func times(_ action: () -> Void) {
+        for _ in 0..<self {
+            action()
+        }
+    }
+}
