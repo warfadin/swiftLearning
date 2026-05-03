@@ -1,56 +1,31 @@
 import Cocoa
+// DEINITIALIZER mevzusu
+
+// deneitializerler'ın başına func yazılmaz, parametre almazlar veya herhangi bi data return etmezler
+// deinit'ler class instance'ın son kopyası yokedildiğinde çalışır
+// deinit'ler direkt olarak çağrılmaz
+// struct'ların deinit'i olmaz çünkü hepsi unique'tir.
+
 
 class User {
-    var username = "Anonymous"
-}
+    let id: Int
 
-var user1 = User()
-user1.username = "Foo"
+    init(id: Int) {
+        self.id = id
+        print("User \(id): I'm alive!")
+    }
 
-var user2 = user1
-user2.username = "Bar"
-
-print(user1.username)
-print(user2.username)
-
-// burada user1 User class'ından bir nesne oluşturdu ve username'i "Foo" yaptı.
-// user2 = user1 dediğimizde yeni bir kopya oluşmadı, aynı User nesnesine referans verildi.
-// bu yüzden user2 üzerinden yapılan değişiklik (username = "Bar"), aslında aynı nesne üzerinde gerçekleşti.
-// dolayısıyla hem user1 hem user2 için username "Bar" olarak göründü.
-
-// _________________
-
-// eğer struct kullansaydık bunlar ayrı olurdu, çünkü struct'ta referans alınmıyor, kopya oluşturuluyor.
-
-struct UserX {
-    var username = "Anonymous"
-}
-
-var user1x = UserX()
-user1x.username = "Foo"
-
-var user2x = user1x
-user2x.username = "Bar"
-
-print(user1x.username)
-print(user2x.username)
-
-//
-
-class UserCustom {
-    var username = "Anonymous"
-    
-    func copy() -> UserCustom {
-        let user = UserCustom()
-        user.username = username
-        return user
+    deinit {
+        print("User \(id): I'm dead!")
     }
 }
+var users = [User]()
+for i in 1...3 {
+    let user = User(id: i)
+    users.append(user)
+}
 
-var user3 = UserCustom()
-user3.username = "Foo"
+print("Loop is finished now!")
+users.removeAll()
+print("Array is clear")
 
-var user4 = user3.copy()
-user4.username = "Mehmet"
-print(user4.username)
-print(user3.username)
