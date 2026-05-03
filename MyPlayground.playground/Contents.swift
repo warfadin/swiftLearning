@@ -2,7 +2,7 @@ import Cocoa
 
 // static, mutating, throwing örneği
 // gear kontrolü ve error handling
-// Paul Hudson checkpoint 6'yı çözmeye çalıştım ama bokunu çıkardım bence
+// Paul Hudson checkpoint 6'yı çözmeye çalıştım ama bokunu çıkardım bence, yine de kötü değil.
 
 
 struct Car {
