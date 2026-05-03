@@ -13,39 +13,43 @@ class Dogs: Animal {
     func speak() {
         print("bark")
     }
-}
-
-class Corgi: Dogs {
-    override func speak() {
-        print("woof")
-    }
-}
-
-class Poodle: Dogs{
-    override func speak() {
-        print("pup")
-    }
-}
-
-class Cats: Animal {
-    var isTame: Bool
-    init(isTame: Bool) {
-        self.isTame = isTame
+    init() {
         super.init(legs: 4)
     }
-    func speak() {
-        print("meow")
-    }
 }
+    
+    class Corgi: Dogs {
+        override func speak() {
+            print("woof")
+        }
+    }
+    
+    class Poodle: Dogs{
+        override func speak() {
+            print("pup")
+        }
+    }
+    
+    class Cats: Animal {
+        var isTame: Bool
+        init(isTame: Bool) {
+            self.isTame = isTame
+            super.init(legs: 4)
+        }
+        func speak() {
+            print("meow")
+        }
+    }
+    
+    final class Persian: Cats {
+        override func speak() {
+            print("miaow")
+        }
+    }
+    
+    final class Lion: Cats {
+        override func speak() {
+            print("roar")
+        }
+    }
 
-final class Persian: Cats {
-    override func speak() {
-        print("miaow")
-    }
-}
-
-final class Lion: Cats {
-    override func speak() {
-        print("roar")
-    }
-}
