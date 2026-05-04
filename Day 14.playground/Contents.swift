@@ -1,28 +1,17 @@
-// GUARD LET
+// nil coalescing
 
-func printSquare(of number: Int?) {
-    guard let number = number else {
-        print("Missing input")
-        return // guard let her zaman fonksiyondan çıkmaya bi yol vermeli
-    }
+let captains = [
+    "Enterprise": "Picard",
+    "Voyager": "Janeway",
+    "Defiant": "Sisko"
+]
 
-    print("\(number) x \(number) is \(number * number)")
-}
+let new = captains["Serenity"] ?? "Unassigned" // nil coalescing burada eğer unWrap yaptıktan sonra nil bulursa default bir value atıyor.
 
-/////
-func getMeaningOfLife() -> Int? {
-    42
-}
+let new2 = captains["Serenity", default: "N/A"] // bu da yukarıdaki satırla aslında aynı işi yapar.
 
-func printMeaningOfLife() {
-    if let name = getMeaningOfLife() {
-        print(name)
-    }
-}
+let tvShows = ["Enterprise", "Voyager", "Defiant", "Discovery", "Enterprise: The Next Generation"]
+let favorite = tvShows.randomElement() ?? "N/A"
 
-func printM() {
-    guard let name = getMeaningOfLife() else {
-        return
-    }
-    print(name)
-}
+
+
