@@ -1,17 +1,20 @@
-// nil coalescing
+// Optional chaining
 
-let captains = [
-    "Enterprise": "Picard",
-    "Voyager": "Janeway",
-    "Defiant": "Sisko"
-]
+let names = ["Arya", "Bran", "Robb", "Sansa"]
 
-let new = captains["Serenity"] ?? "Unassigned" // nil coalescing burada eğer unWrap yaptıktan sonra nil bulursa default bir value atıyor.
-
-let new2 = captains["Serenity", default: "N/A"] // bu da yukarıdaki satırla aslında aynı işi yapar.
-
-let tvShows = ["Enterprise", "Voyager", "Defiant", "Discovery", "Enterprise: The Next Generation"]
-let favorite = tvShows.randomElement() ?? "N/A"
+let chosen = names.randomElement()?.uppercased() ?? "No one"
+print("Next in line: \(chosen)")
 
 
+struct Book {
+    let title: String
+    let author: String?
+}
 
+var book: Book? = Book(title: "A Song of Ice and Fire", author: "George R.R. Martin")
+var book2: Book? = nil
+let author = book?.author?.first?.uppercased() ?? "anonymous"
+print(author)
+
+let author1=book2?.author?.first?.uppercased() ?? "anonymous"
+print(author1)
