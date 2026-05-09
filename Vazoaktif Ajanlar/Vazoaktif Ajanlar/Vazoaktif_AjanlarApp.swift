@@ -82,12 +82,12 @@ struct VasoactiveCalculatorView: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Vazoaktif Ajan Hesaplayıcı")
                     .font(.headline.weight(.bold))
                 Text(selectedAgent.displayName)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.title2.weight(.heavy))
+                    .foregroundStyle(selectedAgent.color)
             }
 
             Spacer()
@@ -106,80 +106,60 @@ struct VasoactiveCalculatorView: View {
     }
 
     private var agentPicker: some View {
-        HStack(spacing: 8) {
-            ForEach(VasoactiveAgent.allCases) { agent in
-                Button {
-                    selectedAgent = agent
-                } label: {
-                    Text(agent.shortName)
-                        .font(.subheadline.weight(.bold))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 42)
-                        .foregroundStyle(selectedAgent == agent ? .white : AppColors.primaryText(isDarkMode))
-                        .background(selectedAgent == agent ? agent.color : AppColors.controlBackground(isDarkMode))
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(agent.displayName)
-            }
-        }
+        AgentPicker(
+            selectedAgent: $selectedAgent,
+            isDarkMode: isDarkMode
+        )
     }
 
     private var patientAndPresetPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Kilo")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(.secondary)
-
-                    Menu {
-                        ForEach(Array(stride(from: 30, through: 180, by: 5)), id: \.self) { kg in
-                            Button("\(kg) kg") { weightKg = kg }
-                        }
-                    } label: {
-                        HStack {
+            HStack(spacing: 10) {
+                Menu {
+                    ForEach(Array(stride(from: 30, through: 180, by: 5)), id: \.self) { kg in
+                        Button("\(kg) kg") { weightKg = kg }
+                    }
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Kilo")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 5) {
                             Text("\(weightKg) kg")
-                                .font(.title3.weight(.bold))
+                                .font(.title3.weight(.heavy))
                             Image(systemName: "chevron.down")
                                 .font(.caption.weight(.bold))
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 11)
-                        .padding(.horizontal, 12)
-                        .background(AppColors.controlBackground(isDarkMode), in: RoundedRectangle(cornerRadius: 8))
                     }
-                    .foregroundStyle(AppColors.primaryText(isDarkMode))
-                }
-
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text("Presetler")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Button {
-                            showsManualMix.toggle()
-                        } label: {
-                            Image(systemName: showsManualMix ? "slider.horizontal.3" : "pencil.line")
-                                .frame(width: 32, height: 32)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(selectedAgent.color)
-                        .accessibilityLabel("Manuel ayarla")
-                    }
-
-                    Picker("Preset", selection: $selectedPresetID) {
-                        ForEach(selectedAgent.presets) { preset in
-                            Text(preset.name).tag(preset.id)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(width: 92, height: 54, alignment: .leading)
+                    .padding(.horizontal, 12)
                     .background(AppColors.controlBackground(isDarkMode), in: RoundedRectangle(cornerRadius: 8))
                 }
+                .foregroundStyle(AppColors.primaryText(isDarkMode))
+
+                Picker("Preset", selection: $selectedPresetID) {
+                    ForEach(selectedAgent.presets) { preset in
+                        Text(preset.name).tag(preset.id)
+                    }
+                }
+                .pickerStyle(.menu)
+                .font(.body.weight(.bold))
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity, minHeight: 54, alignment: .leading)
+                .background(AppColors.controlBackground(isDarkMode), in: RoundedRectangle(cornerRadius: 8))
+
+                Button {
+                    showsManualMix.toggle()
+                } label: {
+                    Image(systemName: showsManualMix ? "slider.horizontal.3" : "pencil.line")
+                        .font(.system(size: 18, weight: .bold))
+                        .frame(width: 54, height: 54)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(showsManualMix ? .white : selectedAgent.color)
+                .background(showsManualMix ? selectedAgent.color : AppColors.controlBackground(isDarkMode))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .accessibilityLabel("Manuel ayarla")
             }
 
             if showsManualMix {
@@ -238,17 +218,17 @@ struct VasoactiveCalculatorView: View {
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.secondary)
                     Text("\(dose, specifier: "%.3f") mcg/kg/dk")
-                        .font(.title2.weight(.heavy))
-                        .foregroundStyle(selectedAgent.color)
+                        .font(.title.weight(.heavy))
+                        .foregroundStyle(selectedAgent.intensity(for: dose).color)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(selectedAgent.intensity(for: dose).label)
-                        .font(.caption.weight(.heavy))
+                        .font(.headline.weight(.heavy))
                         .foregroundStyle(selectedAgent.intensity(for: dose).color)
-                    Text("\(infusionRate, specifier: "%.1f") cc/h")
+                    Text("\(infusionRate, specifier: "%.0f") cc/h")
                         .font(.title2.weight(.heavy))
                 }
             }
@@ -258,7 +238,7 @@ struct VasoactiveCalculatorView: View {
                 range: doseRange,
                 intensity: selectedAgent.intensity(for: dose)
             )
-            .frame(height: 44)
+            .frame(height: 58)
 
             HStack {
                 Text("0")
@@ -307,6 +287,51 @@ struct VasoactiveCalculatorView: View {
     }
 }
 
+struct AgentPicker: View {
+    @Binding var selectedAgent: VasoactiveAgent
+    let isDarkMode: Bool
+
+    private let agents = VasoactiveAgent.allCases
+
+    var body: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 8) {
+                ForEach(agents) { agent in
+                    Button {
+                        selectedAgent = agent
+                    } label: {
+                        Text(agent.shortName)
+                            .font(.subheadline.weight(.bold))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .foregroundStyle(selectedAgent == agent ? .white : AppColors.primaryText(isDarkMode))
+                            .background(selectedAgent == agent ? agent.color : AppColors.controlBackground(isDarkMode))
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(agent.displayName)
+                }
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { gesture in
+                        selectAgent(at: gesture.location.x, totalWidth: proxy.size.width)
+                    }
+            )
+        }
+        .frame(height: 44)
+    }
+
+    private func selectAgent(at xPosition: CGFloat, totalWidth: CGFloat) {
+        guard totalWidth > 0 else { return }
+        let clampedX = min(max(xPosition, 0), totalWidth - 0.1)
+        let rawIndex = Int((clampedX / totalWidth) * CGFloat(agents.count))
+        let index = min(max(rawIndex, 0), agents.count - 1)
+        selectedAgent = agents[index]
+    }
+}
+
 struct GradientDoseSlider: View {
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -316,7 +341,8 @@ struct GradientDoseSlider: View {
         GeometryReader { proxy in
             let width = proxy.size.width
             let progress = normalizedProgress
-            let thumbX = max(14, min(width - 14, progress * width))
+            let thumbSize: CGFloat = 42
+            let thumbX = max(thumbSize / 2, min(width - thumbSize / 2, progress * width))
 
             ZStack(alignment: .leading) {
                 Capsule()
@@ -327,20 +353,21 @@ struct GradientDoseSlider: View {
                             endPoint: .trailing
                         )
                     )
-                    .frame(height: 12)
+                    .frame(height: 14)
                     .opacity(0.95)
 
                 Capsule()
                     .fill(.black.opacity(0.10))
-                    .frame(height: 12)
+                    .frame(height: 14)
 
                 Circle()
                     .fill(intensity.color)
-                    .frame(width: 30, height: 30)
-                    .overlay(Circle().stroke(.white, lineWidth: 3))
-                    .shadow(color: .black.opacity(0.18), radius: 5, y: 2)
-                    .offset(x: thumbX - 15)
+                    .frame(width: thumbSize, height: thumbSize)
+                    .overlay(Circle().stroke(.white, lineWidth: 4))
+                    .shadow(color: .black.opacity(0.20), radius: 7, y: 3)
+                    .offset(x: thumbX - thumbSize / 2)
             }
+            .frame(height: proxy.size.height)
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
