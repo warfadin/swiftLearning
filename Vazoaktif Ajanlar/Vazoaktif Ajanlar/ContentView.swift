@@ -45,16 +45,24 @@ struct ContentView: View {
     private var toolList: some View {
         VStack(spacing: 10) {
             ForEach(tools) { tool in
-                if tool.id == .vasoactiveCalculator {
-                    NavigationLink {
-                        VasoactiveCalculatorView()
-                    } label: {
-                        ToolCard(tool: tool, isDarkMode: isDarkMode)
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(!tool.isEnabled)
+                NavigationLink {
+                    destination(for: tool)
+                } label: {
+                    ToolCard(tool: tool, isDarkMode: isDarkMode)
                 }
+                .buttonStyle(.plain)
+                .disabled(!tool.isEnabled)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func destination(for tool: ToolDefinition) -> some View {
+        switch tool.id {
+        case .vasoactiveCalculator:
+            VasoactiveCalculatorView()
+        case .foodMenu:
+            FoodMenuView()
         }
     }
 }
