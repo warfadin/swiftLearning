@@ -1,5 +1,5 @@
 //  FoodMenuView.swift
-//  Vazoaktif Ajanlar
+//  MedKitPlus
 //
 //  Created by Mehmet Ataman on 10.05.2026.
 //

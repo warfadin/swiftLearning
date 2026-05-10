@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct VasoactiveCalculatorApp: App {
+struct MedKitPlusApp: App {
     @AppStorage("appThemeMode") private var appThemeModeRawValue = AppThemeMode.system.rawValue
 
     var body: some Scene {

@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6F17C3212FAF418B0064C645 /* Vazoaktif Ajanlar */ = {
+		6F17C3212FAF418B0064C645 /* MedKitPlus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Vazoaktif Ajanlar";
+			path = MedKitPlus;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		6F17C3162FAF418B0064C645 = {
 			isa = PBXGroup;
 			children = (
-				6F17C3212FAF418B0064C645 /* Vazoaktif Ajanlar */,
+				6F17C3212FAF418B0064C645 /* MedKitPlus */,
 				6F17C3202FAF418B0064C645 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,12 +61,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6F17C3212FAF418B0064C645 /* Vazoaktif Ajanlar */,
+				6F17C3212FAF418B0064C645 /* MedKitPlus */,
 			);
 			name = MedKitPlus;
 			packageProductDependencies = (
 			);
-			productName = "Vazoaktif Ajanlar";
+			productName = MedKitPlus;
 			productReference = 6F17C31F2FAF418B0064C645 /* MedKitPlus.app */;
 			productType = "com.apple.product-type.application";
 		};
