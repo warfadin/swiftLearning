@@ -7,17 +7,184 @@ import SwiftUI
 
 struct FoodMenuView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @State private var selectedLocation: FoodMenuLocation = .camlik
+    @State private var selectedContentLocation: FoodMenuLocation = .camlik
     @State private var camlikMenu: CanteenMenu?
-    @State private var selectedDate = Date()
-    @State private var selectedMode: FoodMenuMode = .day
-    @State private var isLoading = false
-    @State private var errorMessage: String?
-    @State private var hasLoaded = false
+    @State private var selectedCamlikDate = Date()
+    @State private var selectedCamlikMode: FoodMenuMode = .day
+    @State private var isCamlikLoading = false
+    @State private var camlikErrorMessage: String?
+    @State private var hasLoadedCamlik = false
+    @State private var hospitalMenu: HospitalMonthlyMenu?
+    @State private var selectedHospitalDate = Date()
+    @State private var selectedHospitalMode: HospitalMenuMode = .day
+    @State private var isHospitalLoading = false
+    @State private var hospitalErrorMessage: String?
+    @State private var hasLoadedHospital = false
+
+    private var isDarkMode: Bool {
+        colorScheme == .dark
+    }
+
+    var body: some View {
+        ZStack {
+            AppColors.background(isDarkMode).ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                locationPicker
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 6)
+
+                switch selectedContentLocation {
+                case .camlik:
+                    CamlikMenuView(
+                        camlikMenu: $camlikMenu,
+                        selectedDate: $selectedCamlikDate,
+                        selectedMode: $selectedCamlikMode,
+                        isLoading: $isCamlikLoading,
+                        errorMessage: $camlikErrorMessage,
+                        hasLoaded: $hasLoadedCamlik
+                    )
+                case .hospital:
+                    HospitalMenuView(
+                        hospitalMenu: $hospitalMenu,
+                        selectedDate: $selectedHospitalDate,
+                        selectedMode: $selectedHospitalMode,
+                        isLoading: $isHospitalLoading,
+                        errorMessage: $hospitalErrorMessage,
+                        hasLoaded: $hasLoadedHospital
+                    )
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Bugün") {
+                    selectToday()
+                }
+            }
+        }
+    }
+
+    private var locationPicker: some View {
+        HStack(spacing: 10) {
+            ForEach(FoodMenuLocation.allCases) { location in
+                Button {
+                    selectedLocation = location
+                    Task { @MainActor in
+                        await Task.yield()
+                        if selectedLocation == location {
+                            selectedContentLocation = location
+                        }
+                    }
+                } label: {
+                    Label(location.title, systemImage: location.systemImage)
+                        .font(.subheadline.weight(.heavy))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 11)
+                        .foregroundStyle(location == selectedLocation ? location.accentColor : AppColors.primaryText(isDarkMode))
+                        .background(
+                            Capsule(style: .continuous)
+                                .fill(locationBackground(for: location))
+                        )
+                        .overlay {
+                            Capsule(style: .continuous)
+                                .stroke(locationStroke(for: location), lineWidth: 1)
+                        }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func locationBackground(for location: FoodMenuLocation) -> Color {
+        if location == selectedLocation {
+            return location.accentColor.opacity(isDarkMode ? 0.22 : 0.14)
+        }
+
+        return isDarkMode ? .white.opacity(0.08) : .white.opacity(0.72)
+    }
+
+    private func locationStroke(for location: FoodMenuLocation) -> Color {
+        location == selectedLocation ? location.accentColor.opacity(0.55) : .white.opacity(isDarkMode ? 0.10 : 0.35)
+    }
+
+    private func selectToday() {
+        switch selectedLocation {
+        case .camlik:
+            selectedCamlikMode = .day
+            selectedCamlikDate = camlikMenu?.menu(for: Date())?.date ?? Date()
+        case .hospital:
+            selectedHospitalMode = .day
+            selectedHospitalDate = hospitalMenu?.menu(for: Date())?.date ?? Date()
+        }
+    }
+}
+
+private enum FoodMenuLocation: String, CaseIterable, Identifiable {
+    case camlik
+    case hospital
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .camlik:
+            "Çamlık"
+        case .hospital:
+            "Hastane"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .camlik:
+            "tree.fill"
+        case .hospital:
+            "cross.fill"
+        }
+    }
+
+    var accentColor: Color {
+        switch self {
+        case .camlik:
+            .green
+        case .hospital:
+            .red
+        }
+    }
+}
+
+private struct CamlikMenuView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Binding var camlikMenu: CanteenMenu?
+    @Binding var selectedDate: Date
+    @Binding var selectedMode: FoodMenuMode
+    @Binding var isLoading: Bool
+    @Binding var errorMessage: String?
+    @Binding var hasLoaded: Bool
 
     private let service: FoodMenuService
     private let calendar = Calendar.current
 
-    init(service: FoodMenuService = FoodMenuService()) {
+    init(
+        camlikMenu: Binding<CanteenMenu?>,
+        selectedDate: Binding<Date>,
+        selectedMode: Binding<FoodMenuMode>,
+        isLoading: Binding<Bool>,
+        errorMessage: Binding<String?>,
+        hasLoaded: Binding<Bool>,
+        service: FoodMenuService = FoodMenuService()
+    ) {
+        self._camlikMenu = camlikMenu
+        self._selectedDate = selectedDate
+        self._selectedMode = selectedMode
+        self._isLoading = isLoading
+        self._errorMessage = errorMessage
+        self._hasLoaded = hasLoaded
         self.service = service
     }
 
@@ -36,20 +203,10 @@ struct FoodMenuView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     header
-                    modePicker
                     content
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-            }
-        }
-        .navigationTitle("Yemek Menüsü")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Bugün") {
-                    selectToday()
-                }
             }
         }
         .task {
@@ -64,21 +221,22 @@ struct FoodMenuView: View {
     }
 
     private var header: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .center, spacing: 12) {
                 Text("Çamlık")
                     .font(.system(size: 34, weight: .heavy, design: .rounded))
                     .foregroundStyle(.green)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                Text("Yemek menüsü")
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(AppColors.primaryText(isDarkMode))
+
+                Spacer(minLength: 8)
+
+                modePicker
             }
 
-            Spacer()
-
-            AppThemeControl()
+            Text("Yemek menüsü")
+                .font(.headline.weight(.bold))
+                .foregroundStyle(AppColors.primaryText(isDarkMode))
         }
     }
 
@@ -89,6 +247,7 @@ struct FoodMenuView: View {
             }
         }
         .pickerStyle(.segmented)
+        .frame(width: 150)
     }
 
     @ViewBuilder
@@ -130,7 +289,6 @@ struct FoodMenuView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .automatic))
         .frame(minHeight: 560)
-        .animation(.easeInOut(duration: 0.2), value: selectedDate)
     }
 
     private var monthList: some View {
@@ -333,37 +491,51 @@ struct FoodMenuView: View {
         }
     }
 
-    private func selectToday() {
-        selectedMode = .day
-
-        if let today = camlikMenu?.menu(for: Date()) {
-            selectedDate = today.date
-        } else {
-            selectedDate = Date()
-        }
-    }
-
     private func visibleMealItems(_ items: [MealItem]) -> [MealItem] {
         items.filter { !$0.displayName.isEmpty && !$0.isAllergenOnly }
     }
 
     @MainActor
     private func loadMenu(forceRemote: Bool = false) async {
-        isLoading = true
-        errorMessage = nil
+        let cachedMenu = service.loadCachedMonthlyCamlikMenu()
+        if let cachedMenu {
+            applyMenu(cachedMenu)
+            errorMessage = nil
+        }
+
+        let shouldFetch = forceRemote
+            || cachedMenu == nil
+            || service.shouldRefreshMonthlyCamlikMenu()
+
+        guard shouldFetch else {
+            isLoading = false
+            return
+        }
+
+        isLoading = camlikMenu == nil
+        if camlikMenu == nil {
+            errorMessage = nil
+        }
 
         do {
             let menu = try await service.fetchMonthlyCamlikMenu(forceRemote: forceRemote)
-            camlikMenu = menu
-            selectedDate = menu.menu(for: selectedDate)?.date
-                ?? menu.menu(for: Date())?.date
-                ?? menu.days.first?.date
-                ?? selectedDate
+            applyMenu(menu)
+            errorMessage = nil
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            if camlikMenu == nil {
+                errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            }
         }
 
         isLoading = false
+    }
+
+    private func applyMenu(_ menu: CanteenMenu) {
+        camlikMenu = menu
+        selectedDate = menu.menu(for: selectedDate)?.date
+            ?? menu.menu(for: Date())?.date
+            ?? menu.days.first?.date
+            ?? selectedDate
     }
 }
 

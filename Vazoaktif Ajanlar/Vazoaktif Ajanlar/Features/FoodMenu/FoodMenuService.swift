@@ -81,11 +81,27 @@ struct FoodMenuService {
         self.calendar = calendar
     }
 
+    func loadCachedMonthlyCamlikMenu() -> CanteenMenu? {
+        cache.load()
+    }
+
+    func shouldRefreshMonthlyCamlikMenu(now: Date = Date()) -> Bool {
+        cache.shouldRefreshToday(calendar: calendar, now: now)
+    }
+
     func fetchMonthlyCamlikMenu(forceRemote: Bool = false) async throws -> CanteenMenu {
+        let cachedMenu = cache.load()
+
+        if !forceRemote,
+           let cachedMenu,
+           !cache.shouldRefreshToday(calendar: calendar) {
+            return cachedMenu
+        }
+
         do {
             return try await fetchAndCacheRemoteMonthlyCamlikMenu()
         } catch {
-            if let cachedMenu = cache.load() {
+            if let cachedMenu {
                 return cachedMenu
             }
 
@@ -416,19 +432,23 @@ struct FoodMenuService {
 
 struct FoodMenuCache {
     private let key: String
+    private let lastSuccessfulFetchDateKey: String
     private let defaults: UserDefaults
 
     init(
         key: String = "camlikMonthlyMenuCache",
+        lastSuccessfulFetchDateKey: String? = nil,
         defaults: UserDefaults = .standard
     ) {
         self.key = key
+        self.lastSuccessfulFetchDateKey = lastSuccessfulFetchDateKey ?? "\(key)LastSuccessfulFetchDate"
         self.defaults = defaults
     }
 
-    func save(_ menu: CanteenMenu) throws {
+    func save(_ menu: CanteenMenu, fetchedAt: Date = Date()) throws {
         let data = try JSONEncoder().encode(menu)
         defaults.set(data, forKey: key)
+        defaults.set(fetchedAt, forKey: lastSuccessfulFetchDateKey)
     }
 
     func load() -> CanteenMenu? {
@@ -437,6 +457,18 @@ struct FoodMenuCache {
         }
 
         return try? JSONDecoder().decode(CanteenMenu.self, from: data)
+    }
+
+    func lastSuccessfulFetchDate() -> Date? {
+        defaults.object(forKey: lastSuccessfulFetchDateKey) as? Date
+    }
+
+    func shouldRefreshToday(calendar: Calendar = .current, now: Date = Date()) -> Bool {
+        guard let lastSuccessfulFetchDate = lastSuccessfulFetchDate() else {
+            return true
+        }
+
+        return !calendar.isDate(lastSuccessfulFetchDate, inSameDayAs: now)
     }
 }
 

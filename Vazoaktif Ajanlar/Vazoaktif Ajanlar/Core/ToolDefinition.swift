@@ -24,8 +24,8 @@ extension ToolDefinition {
         ),
         ToolDefinition(
             id: .foodMenu,
-            title: "Çamlık Yemek Menüsü",
-            subtitle: "Bugünün öğle yemeği ve ordövr listesi",
+            title: "Yemek Menüsü",
+            subtitle: "Çamlık ve hastane yemek listeleri",
             systemImage: "fork.knife",
             isEnabled: true
         )
