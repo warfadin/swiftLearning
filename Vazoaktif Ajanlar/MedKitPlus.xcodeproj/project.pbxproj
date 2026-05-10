@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		6F17C31F2FAF418B0064C645 /* Vazoaktif Ajanlar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Vazoaktif Ajanlar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F17C31F2FAF418B0064C645 /* MedKitPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MedKitPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		6F17C3202FAF418B0064C645 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6F17C31F2FAF418B0064C645 /* Vazoaktif Ajanlar.app */,
+				6F17C31F2FAF418B0064C645 /* MedKitPlus.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6F17C31E2FAF418B0064C645 /* Vazoaktif Ajanlar */ = {
+		6F17C31E2FAF418B0064C645 /* MedKitPlus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6F17C32A2FAF418D0064C645 /* Build configuration list for PBXNativeTarget "Vazoaktif Ajanlar" */;
+			buildConfigurationList = 6F17C32A2FAF418D0064C645 /* Build configuration list for PBXNativeTarget "MedKitPlus" */;
 			buildPhases = (
 				6F17C31B2FAF418B0064C645 /* Sources */,
 				6F17C31C2FAF418B0064C645 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				6F17C3212FAF418B0064C645 /* Vazoaktif Ajanlar */,
 			);
-			name = "Vazoaktif Ajanlar";
+			name = MedKitPlus;
 			packageProductDependencies = (
 			);
 			productName = "Vazoaktif Ajanlar";
-			productReference = 6F17C31F2FAF418B0064C645 /* Vazoaktif Ajanlar.app */;
+			productReference = 6F17C31F2FAF418B0064C645 /* MedKitPlus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6F17C31A2FAF418B0064C645 /* Build configuration list for PBXProject "Vazoaktif Ajanlar" */;
+			buildConfigurationList = 6F17C31A2FAF418B0064C645 /* Build configuration list for PBXProject "MedKitPlus" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6F17C31E2FAF418B0064C645 /* Vazoaktif Ajanlar */,
+				6F17C31E2FAF418B0064C645 /* MedKitPlus */,
 			);
 		};
 /* End PBXProject section */
@@ -269,7 +269,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.mehmetataman.Vazoaktif-Ajanlar";
+				PRODUCT_BUNDLE_IDENTIFIER = de.mehmetataman.medkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -304,7 +304,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.mehmetataman.Vazoaktif-Ajanlar";
+				PRODUCT_BUNDLE_IDENTIFIER = de.mehmetataman.medkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -319,7 +319,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6F17C31A2FAF418B0064C645 /* Build configuration list for PBXProject "Vazoaktif Ajanlar" */ = {
+		6F17C31A2FAF418B0064C645 /* Build configuration list for PBXProject "MedKitPlus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6F17C3282FAF418D0064C645 /* Debug */,
@@ -328,7 +328,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6F17C32A2FAF418D0064C645 /* Build configuration list for PBXNativeTarget "Vazoaktif Ajanlar" */ = {
+		6F17C32A2FAF418D0064C645 /* Build configuration list for PBXNativeTarget "MedKitPlus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6F17C32B2FAF418D0064C645 /* Debug */,
